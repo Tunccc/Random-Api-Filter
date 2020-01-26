@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,SafeAreaView,Text, FlatList, Image,StyleSheet,TouchableOpacity, TextInput} from 'react-native';
+import {View,SafeAreaView,Text, FlatList, Image,StyleSheet,TouchableOpacity,ActivityIndicator, TextInput} from 'react-native';
 import data from '../../data'
 import axios from 'axios'
 
@@ -9,13 +9,15 @@ export default class App extends Component {
 
     state = {
         text:'',
-        contacts:[]
+        contacts:[],
+        loading:true
     }
     getContacts = async () => {
 
         const {data: {results: contacts}} = await axios.get('https://randomuser.me/api/?results=30');
         this.setState({
-            contacts
+            contacts,
+            loading:false
         })
     
     }
@@ -70,13 +72,22 @@ export default class App extends Component {
       </View>
     );
   }
-  
+  renderFooter = () => {
+    if (!this.state.loading) return null;
+      return (
+          <View>
+              <ActivityIndicator size="large" />
+          </View>
+      );
+  }
 
   render() {
 
     return(
       <SafeAreaView>
+         
           <FlatList 
+          ListFooterComponent={this.renderFooter}
            ListHeaderComponent= {this.renderHeader}
            data= {this.state.contacts}
            renderItem = {this.renderItemContacts}
