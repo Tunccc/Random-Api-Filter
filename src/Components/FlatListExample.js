@@ -10,6 +10,7 @@ export default class App extends Component {
     state = {
         text:'',
         contacts:[],
+        allContacts:[],
         loading:true
     }
     getContacts = async () => {
@@ -17,6 +18,7 @@ export default class App extends Component {
         const {data: {results: contacts}} = await axios.get('https://randomuser.me/api/?results=30');
         this.setState({
             contacts,
+            allContacts:contacts,
             loading:false
         })
     
@@ -42,13 +44,14 @@ export default class App extends Component {
 
   searchFilter = text => {
 
-    const newData = data.filter( item =>{
-        const listItem = `${item.name.toLocaleLowerCase()} ${item.company.toLocaleLowerCase()}`
+    const newData = this.state.allContacts.filter( item =>{
+        const listItem = `${item.name.first.toLocaleLowerCase()} ${item.name.last.toLocaleLowerCase()} ${item.location.state.toLocaleLowerCase()}`
         return listItem.indexOf(text.toLocaleLowerCase()) > -1;
     });
 
     this.setState({
         contacts:newData,
+       
     })
    
   };
